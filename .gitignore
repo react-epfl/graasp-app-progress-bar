@@ -1,0 +1,8 @@
+# exclude webstorm and idea files
+.idea
+
+# exclude sublime project files
+*.sublime-*
+
+# exclude macos files
+.DS_Store
