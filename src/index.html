@@ -1,0 +1,39 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css" rel="stylesheet" />
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.js"></script>
+</head>
+
+<body>
+  <ul class="panel view-select clearfix">
+    <li class="view-teacher">__MSG_teacher_view__</li>
+    <li class="view-student active">__MSG_student_view__</li>
+  </ul>
+  <div class="panel slider-content">
+    <h3 class="title">__MSG_my_progress__:</h3>
+    <div id="progressSlider"></div>
+  </div>
+  <div class="panel teacher-content">
+    &nbsp;__MSG_table_description__:
+    <br>
+    <br>
+    <table class="student-progress">
+      <thead>
+        <tr>
+          <th>__MSG_student_name__</th>
+          <th>__MSG_progress__</th>
+          <th>__MSG_modified__ <span class="refresh-button">&#10227;</span></th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <div class="panel loading active">
+    <div class="loader"></div>
+  </div>
+</body>
+
+</html>

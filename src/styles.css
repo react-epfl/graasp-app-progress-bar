@@ -1,0 +1,172 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #5050d2;
+  font-size: 16px;
+  color: white;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.panel {
+  display: none;
+  padding: 50px;
+}
+
+.panel.active {
+  display: block;
+}
+
+.view-select {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: #fff;
+}
+
+.view-select li {
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 7px 10px;
+  color: #5050d2;
+  cursor: pointer;
+}
+
+.view-select li.active,
+.view-select li.active:hover {
+  background-color: #5050d2;
+  color: #fff;
+}
+
+.view-select li:hover {
+  background-color: #9698e2;
+  color: #fff;
+}
+
+.slider-content {
+  height: 100px;
+}
+
+.title {
+  margin: 0;
+}
+
+#progressSlider {
+  width: 100%;
+  margin-top: 50px;
+}
+
+#progressSlider .noUi-handle {
+  width: 20px;
+  left: -10px;
+}
+
+#progressSlider .noUi-handle:after {
+  left: 10px;
+}
+
+#progressSlider .noUi-handle:before {
+  left: 7px;
+}
+
+#progressSlider .noUi-connect {
+  background-color: white;
+}
+
+#progressSlider .noUi-base {
+  background-color: #9698e2;
+}
+
+.student-progress {
+  width: 100%;
+  text-align: left;
+}
+
+.student-progress tbody tr:nth-child(even) {
+  background-color: #9698e2;
+}
+
+.student-progress th {
+  position: relative;
+  width: 20%;
+  height: 40px;
+  background: white;
+  color: #5050d2;
+  padding: 5px;
+}
+
+.student-progress th:first-child,
+.student-progress th:last-child {
+  width: 40%;
+}
+
+.student-progress td {
+  padding: 2px 5px;
+}
+
+.refresh-button {
+  cursor: pointer;
+  font-size: 30px;
+  position: absolute;
+  display: block;
+  top: 5px;
+  right: 5px;
+  line-height: 1;
+}
+
+.student-progress+.loader {
+  margin-top: 20px;
+}
+
+.loading {
+  overflow: hidden;
+}
+
+.loader {
+  font-size: 10px;
+  margin: 0 auto;
+  text-indent: -9999em;
+  width: 10em;
+  height: 10em;
+  border-radius: 50%;
+  background: #ffffff;
+  background: -moz-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+  background: -webkit-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+  background: -o-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+  background: -ms-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+  background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+  position: relative;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+.loader:before {
+  width: 50%;
+  height: 50%;
+  background: #ffffff;
+  border-radius: 100% 0 0 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+}
+
+.loader:after {
+  background: #5050d2;
+  width: 75%;
+  height: 75%;
+  border-radius: 50%;
+  content: '';
+  margin: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}

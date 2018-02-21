@@ -6,3 +6,10 @@
 
 # exclude macos files
 .DS_Store
+
+# exclude build directories
+build
+dist
+
+# exclude node_modules
+node_modules
