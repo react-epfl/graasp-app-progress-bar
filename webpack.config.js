@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StyleExtHtmlWebpackPlugin = require('style-ext-html-webpack-plugin');
 const path = require('path');
 
@@ -12,15 +12,22 @@ module.exports = {
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
-          fallback: "style-loader",
-          use: "css-loader"
-        })
-      }
-    ]
+          fallback: 'style-loader',
+          use: 'css-loader',
+        }),
+      },
+      {
+        test: /\.js$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+    ],
   },
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin(),
@@ -31,6 +38,6 @@ module.exports = {
     new HtmlWebpackInlineSourcePlugin(),
     new ExtractTextPlugin(path.resolve(__dirname, 'src/styles.css')),
     // the plugin must come after HtmlWebpackPlugin and ExtractTextWebpackPlugin
-    new StyleExtHtmlWebpackPlugin()
-  ]
+    new StyleExtHtmlWebpackPlugin(),
+  ],
 };
