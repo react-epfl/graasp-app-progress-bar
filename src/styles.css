@@ -13,7 +13,7 @@ body {
 }
 
 .panel {
-  display: none;
+  /*display: none;*/
   padding: 50px;
 }
 
@@ -59,19 +59,6 @@ body {
 #progressSlider {
   width: 100%;
   margin-top: 50px;
-}
-
-#progressSlider .noUi-handle {
-  width: 20px;
-  left: -10px;
-}
-
-#progressSlider .noUi-handle:after {
-  left: 10px;
-}
-
-#progressSlider .noUi-handle:before {
-  left: 7px;
 }
 
 #progressSlider .noUi-connect {
