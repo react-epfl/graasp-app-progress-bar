@@ -13,7 +13,7 @@ body {
 }
 
 .panel {
-  /*display: none;*/
+  display: none;
   padding: 50px;
 }
 

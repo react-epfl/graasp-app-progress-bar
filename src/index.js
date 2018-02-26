@@ -1,5 +1,6 @@
 import Qs from 'qs';
 import noUiSlider from 'nouislider';
+import $ from 'jquery';
 import './styles.css';
 
 const rejectNotOkResponse = (response) => {
@@ -11,14 +12,21 @@ const rejectNotOkResponse = (response) => {
   return response;
 };
 
-const getAppInstance = (appId, userId) =>
-  fetch(
-    `http://localhost:7000/app-instances?appId=${appId}&userId=${userId}`,
+const getAppInstances = (appId, userId) => {
+  let url = `http://localhost:7000/app-instances?appId=${appId}`;
+
+  if (userId) {
+    url += `&userId=${userId}`;
+  }
+
+  return fetch(
+    url,
     { headers: { 'content-type': 'application/json' } },
   )
     .then(rejectNotOkResponse)
     .then(response => response.json())
-    .then(array => array[0]);
+    .then(array => (userId ? array[0] : array)); // if userId is set, return only the element
+};
 
 const createAppInstance = (appId, userId, data) => {
   const object = { appId, userId, data };
@@ -50,60 +58,104 @@ const updateAppInstance = (instanceId, data) => {
     .then(response => response.json());
 };
 
-const { appId, userId } = Qs.parse(window.location.search, { ignoreQueryPrefix: true });
+const refreshInstances = (appId) => {
+  getAppInstances(appId)
+    .then((instances) => {
+      const table = $('tbody');
+      table.empty();
+      instances.forEach(({ userId, data, updatedAt }) => table
+        .append(`<tr><td>${userId}</td><td>${data.progress}%</td><td>${updatedAt}</td></tr>`));
+    });
+};
 
-if (!appId || !userId) {
-  console.error('Missing context');
-} else {
-  const sliderElement = document.getElementById('progressSlider');
+const initUI = (mode, appId) => {
+  switch (mode) {
+    case 'admin':
+      $('.view-select').addClass('active');
+      $('.view-teacher').addClass('active');
+      $('.teacher-content').addClass('active');
 
-  const updateSlider = (value) => {
-    sliderElement.noUiSlider.set([value]);
-    sliderElement.removeAttribute('disabled');
-  };
+      $('.view-teacher').click(() => {
+        $('.view-teacher, .teacher-content').toggleClass('active', true);
+        $('.view-student, .slider-content').toggleClass('active', false);
+        refreshInstances(appId);
+      });
 
-  noUiSlider.create(
-    sliderElement,
-    {
-      start: 0,
-      connect: [true, false],
-      step: 1,
-      tooltips: true,
-      range: {
-        min: 0,
-        max: 100,
-      },
-      format: {
-        to: value => `${value}%`,
-        from: value => value,
-      },
-    },
-  );
+      $('.view-student').click(() => {
+        $('.view-teacher, .teacher-content').toggleClass('active', false);
+        $('.view-student, .slider-content').toggleClass('active', true);
+      });
 
-  sliderElement.setAttribute('disabled', true);
+      $('.refresh-button').click(() => refreshInstances(appId));
 
-  let instanceId;
+      refreshInstances(appId);
+      break;
+    case 'review':
+      $('#progressSlider').attr('disabled', true);
+      $('.view-select').removeClass('active');
+      $('.slider-content').addClass('active');
+      break;
+    default:
+      $('.view-select').removeClass('active');
+      $('.slider-content').addClass('active');
+  }
+};
 
-  getAppInstance(appId, userId)
-    .then((instance) => {
-      if (!instance) {
-        const initData = { progress: 0 };
-        return createAppInstance(appId, userId, initData);
-      }
+// ####### Init
 
-      return instance;
-    })
-    .then((instance) => {
-      instanceId = instance._id;
-      updateSlider(instance.data.progress);
-    })
-    .catch(console.error);
+const { appId, userId, mode = 'default' } =
+  Qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
-  sliderElement.noUiSlider.on('change', (value) => {
-    const progress = parseInt(value[0].slice(0, -1), 10);
-    const data = { progress };
-
-    updateAppInstance(instanceId, data)
-      .catch(console.error);
-  });
+if (!appId || (!userId && mode !== 'admin')) {
+  throw new Error('Missing context');
 }
+
+const sliderElement = document.getElementById('progressSlider');
+const updateSlider = value => sliderElement.noUiSlider.set([value]);
+
+noUiSlider.create(
+  sliderElement,
+  {
+    start: 0,
+    connect: [true, false],
+    step: 1,
+    tooltips: true,
+    range: {
+      min: 0,
+      max: 100,
+    },
+    format: {
+      to: value => `${value}%`,
+      from: value => value,
+    },
+  },
+);
+
+initUI(mode, appId);
+
+let instanceId;
+
+// GET data
+getAppInstances(appId, userId)
+  .then((instance) => {
+    if (!instance) {
+      const initData = { progress: 0 };
+      return createAppInstance(appId, userId, initData);
+    }
+
+    return instance;
+  })
+  .then((instance) => {
+    instanceId = instance._id;
+    updateSlider(instance.data.progress);
+  })
+  .catch(console.error);
+
+sliderElement.noUiSlider.on('change', (value) => {
+  const progress = parseInt(value[0].slice(0, -1), 10);
+  const data = { progress };
+
+  // UPDATE data
+  updateAppInstance(instanceId, data)
+    .catch(console.error);
+});
