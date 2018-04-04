@@ -1,0 +1,6 @@
+- type: parallel
+  steps:
+  - service: app
+    command: yarn lint
+  - service: app
+    command: bash /deploy/scripts/test.sh
