@@ -7,12 +7,21 @@
 # exclude macos files
 .DS_Store
 
-# exclude build directories
-build
+# exclude dist directories
 dist
+
+# production
+build/*
+!build/favicon.ico
 
 # exclude node_modules
 node_modules
 
 # exclude cypress
 cypress
+
+# exclude environment variables
+.env*
+
+# exclude keys
+*.aes

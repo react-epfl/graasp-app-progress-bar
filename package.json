@@ -53,6 +53,9 @@
     "prepush": "jet steps",
     "postcommit": "git status",
     "postcheckout": "yarn install",
-    "postmerge": "yarn install"
+    "postmerge": "yarn install",
+    "deploy": "./scripts/deploy.sh",
+    "stage": "yarn deploy",
+    "release": "yarn deploy -p"
   }
 }

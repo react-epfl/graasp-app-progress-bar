@@ -4,3 +4,14 @@
     command: yarn lint
   - service: app
     command: bash /deploy/scripts/test.sh
+
+- type: serial
+  steps:
+  - service: build
+    command: yarn build
+  - service: aws
+    tag: staging
+    command: /deploy/scripts/deploy.sh -b /deploy/build
+  - service: aws
+    tag: release
+    command: /deploy/scripts/deploy.sh -b /deploy/build -p

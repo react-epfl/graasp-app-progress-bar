@@ -1,4 +1,18 @@
 app:
   build: .
   volumes:
-  - .:/deploy
+    - .:/deploy
+
+build:
+  build: .
+  dockerfile: Dockerfile.build
+  environment:
+    ENV: production
+  volumes:
+    - ./build:/usr/src/app/build
+
+aws:
+  image: codeship/aws-deployment
+  encrypted_env_file: .codeship.encrypted
+  volumes:
+    - .:/deploy
