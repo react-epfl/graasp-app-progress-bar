@@ -5,7 +5,7 @@
     command: yarn lint
   - service: app
     name: test
-    command: bash /deploy/scripts/cover.sh
+    command: bash /usr/src/app/scripts/cover.sh
 
 - type: serial
   steps:

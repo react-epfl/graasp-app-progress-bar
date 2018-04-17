@@ -1,7 +1,5 @@
 app:
   build: .
-  volumes:
-    - .:/deploy
 
 build:
   build: .
