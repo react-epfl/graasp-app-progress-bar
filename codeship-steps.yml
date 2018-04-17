@@ -1,17 +1,22 @@
-- type: parallel
+- type: serial
   steps:
   - service: app
+    name: lint
     command: yarn lint
   - service: app
-    command: bash /deploy/scripts/test.sh
+    name: test
+    command: bash /deploy/scripts/cover.sh
 
 - type: serial
   steps:
   - service: build
+    name: build
     command: yarn build
   - service: aws
+    name: stage
     tag: staging
     command: /deploy/scripts/deploy.sh -b /deploy/build
   - service: aws
+    name: release
     tag: release
     command: /deploy/scripts/deploy.sh -b /deploy/build -p

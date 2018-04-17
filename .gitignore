@@ -25,3 +25,7 @@ cypress
 
 # exclude keys
 *.aes
+
+# exclude coverage
+coverage
+.nyc_output

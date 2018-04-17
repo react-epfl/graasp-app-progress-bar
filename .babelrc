@@ -2,5 +2,10 @@
   "presets": [
     "babel-preset-env",
     "airbnb"
-  ]
+  ],
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  }
 }
