@@ -5,6 +5,11 @@
 /* eslint-disable prefer-arrow-callback, func-names */
 
 // todo: fix urls
+// Cypress will automatically attempt to serve your files if you don’t provide a host.
+// The path should be relative to your project’s root folder (where cypress.json is located).
+// Having Cypress serve your files is useful in simple projects and example apps,
+// but isn’t recommended for real apps. It is always better to run your own server
+// and provide the url to Cypress.
 const userUrl = 'http://localhost:8080/index.html?appId=1&userId=1';
 const adminUrl = 'http://localhost:8080/index.html?appId=1&mode=admin';
 
