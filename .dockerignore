@@ -1,0 +1,6 @@
+.git
+.gitignore
+coverage
+node_modules
+cypress
+.nyc_output

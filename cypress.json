@@ -1,4 +1,7 @@
 {
+  "fixturesFolder": "test/fixtures",
   "integrationFolder": "test/browser",
+  "pluginsFile": "test/plugins",
+  "supportFile": "test/support",
   "videoRecording": false
 }

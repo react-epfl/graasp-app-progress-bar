@@ -15,7 +15,8 @@
       "error",
       {
         "allow": [
-          "_id"
+          "_id",
+          "__coverage__"
         ]
       }
     ]
