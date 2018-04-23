@@ -13,24 +13,29 @@ const rejectNotOkResponse = (response) => {
   return response;
 };
 
-const getAppInstances = (appId, userId) => {
+const getAppInstances = (appId, userId, sessionId) => {
   let url = `//${API_HOST}/app-instances?appId=${appId}`;
 
   if (userId) {
     url += `&userId=${userId}`;
+  } else if (sessionId) {
+    url += `&sessionId=${sessionId}`;
   }
 
   return fetch(
     url,
-    { headers: { 'content-type': 'application/json' } },
+    {
+      headers: { 'content-type': 'application/json' },
+      credentials: 'include',
+    },
   )
     .then(rejectNotOkResponse)
     .then(response => response.json())
-    .then(array => (userId ? array[0] : array)); // if userId is set, return only the element
+    .then(array => ((userId || sessionId) ? array[0] : array)); // if userId is set, return only the element
 };
 
-const createAppInstance = (appId, userId, data) => {
-  const object = { appId, userId, data };
+const createAppInstance = (app, data) => {
+  const object = { app, data };
 
   return fetch(
     `//${API_HOST}/app-instances`,
@@ -38,6 +43,7 @@ const createAppInstance = (appId, userId, data) => {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
       method: 'POST',
+      credentials: 'include',
     },
   )
     .then(rejectNotOkResponse)
@@ -53,6 +59,7 @@ const updateAppInstance = (instanceId, data) => {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
       method: 'PATCH',
+      credentials: 'include',
     },
   )
     .then(rejectNotOkResponse)
@@ -64,8 +71,8 @@ const refreshInstances = (appId) => {
     .then((instances) => {
       const table = $('tbody');
       table.empty();
-      instances.forEach(({ userId, data, updatedAt }) => table
-        .append(`<tr><td>${userId}</td><td>${data.progress}%</td><td>${updatedAt}</td></tr>`));
+      instances.forEach(({ userId, sessionId, data, updatedAt }) => table
+        .append(`<tr><td>${userId || sessionId}</td><td>${data.progress}%</td><td>${updatedAt}</td></tr>`));
     });
 };
 
@@ -104,10 +111,10 @@ const initUI = (mode, appId) => {
 
 // ####### Init
 
-const { appId, userId, mode = 'default' } =
+const { appId, userId, sessionId, mode = 'default' } =
   Qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
-if (!appId || (!userId && mode !== 'admin')) {
+if (!appId || (!(userId || sessionId) && mode !== 'admin')) {
   throw new Error('Missing context');
 }
 
@@ -137,11 +144,11 @@ initUI(mode, appId);
 let instanceId;
 
 // GET data
-getAppInstances(appId, userId)
+getAppInstances(appId, userId, sessionId)
   .then((instance) => {
     if (!instance) {
       const initData = { progress: 0 };
-      return createAppInstance(appId, userId, initData);
+      return createAppInstance(appId, initData);
     }
 
     return instance;
