@@ -2,6 +2,7 @@ import Qs from 'qs';
 import noUiSlider from 'nouislider';
 import $ from 'jquery';
 import './styles.css';
+import { API_HOST } from './config';
 
 const rejectNotOkResponse = (response) => {
   if (!response.ok) {
@@ -13,7 +14,7 @@ const rejectNotOkResponse = (response) => {
 };
 
 const getAppInstances = (appId, userId) => {
-  let url = `http://localhost:7000/app-instances?appId=${appId}`;
+  let url = `//${API_HOST}/app-instances?appId=${appId}`;
 
   if (userId) {
     url += `&userId=${userId}`;
@@ -32,7 +33,7 @@ const createAppInstance = (appId, userId, data) => {
   const object = { appId, userId, data };
 
   return fetch(
-    'http://localhost:7000/app-instances',
+    `//${API_HOST}/app-instances`,
     {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
@@ -47,7 +48,7 @@ const updateAppInstance = (instanceId, data) => {
   const object = { data };
 
   return fetch(
-    `http://localhost:7000/app-instances/${instanceId}`,
+    `//${API_HOST}/app-instances/${instanceId}`,
     {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
