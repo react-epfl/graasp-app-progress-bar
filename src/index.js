@@ -1,8 +1,20 @@
 import Qs from 'qs';
+import SocketIo from 'socket.io-client';
 import noUiSlider from 'nouislider';
 import $ from 'jquery';
 import './styles.css';
 import { API_HOST } from './config';
+
+
+// connect to graasp socket
+const {
+  ilsId,
+  appId,
+  userId,
+  mode = 'default',
+} = Qs.parse(window.location.search, { ignoreQueryPrefix: true });
+const io = SocketIo('http://localhost:8000/ils', { query: { ilsId, appId, userId } });
+io.on('postAction', action => console.log(action));
 
 const rejectNotOkResponse = (response) => {
   if (!response.ok) {
@@ -34,6 +46,20 @@ const createAppInstance = (appId, userId, data) => {
 
   return fetch(
     `//${API_HOST}/app-instances`,
+    {
+      body: JSON.stringify(object),
+      headers: { 'content-type': 'application/json' },
+      method: 'POST',
+    },
+  )
+    .then(rejectNotOkResponse)
+    .then(response => response.json());
+};
+
+const postAction = (appId, userId, data) => {
+  const object = { appId, userId, data };
+  return fetch(
+    `//${API_HOST}/actions`,
     {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
@@ -104,9 +130,6 @@ const initUI = (mode, appId) => {
 
 // ####### Init
 
-const { appId, userId, mode = 'default' } =
-  Qs.parse(window.location.search, { ignoreQueryPrefix: true });
-
 if (!appId || (!userId && mode !== 'admin')) {
   throw new Error('Missing context');
 }
@@ -157,6 +180,9 @@ sliderElement.noUiSlider.on('change', (value) => {
   const data = { progress };
 
   // UPDATE data
-  updateAppInstance(instanceId, data)
-    .catch(console.error);
+  postAction(appId, userId, data);
+
+  // UPDATE data
+  // updateAppInstance(instanceId, data)
+  //   .catch(console.error);
 });
