@@ -2,7 +2,28 @@ import Qs from 'qs';
 import noUiSlider from 'nouislider';
 import $ from 'jquery';
 import './styles.css';
-import { API_HOST } from './config';
+import { GRAASP_HOST } from './config';
+
+const graaspUserViewer = /viewer\.([a-z]+\.)*graasp\.eu/;
+const shortLivedSessionUserViewer = /cloud\.([a-z]+\.)*graasp\.eu/;
+const getApiSubdomain = () => {
+  let apiSubdomain = '';
+  // TODO: there should be a fallback for when the app does not load embedded
+  const { hostname } = window.parent.location;
+
+  if (graaspUserViewer.test(hostname)) {
+    apiSubdomain = 'graasp-users';
+  } else if (shortLivedSessionUserViewer.test(hostname)) {
+    apiSubdomain = 'light-users';
+  } else {
+    // TODO: should it fallback to something?
+    throw new Error(`Unexpected host: ${hostname}`);
+  }
+
+  return apiSubdomain;
+};
+
+const API_HOST = `${getApiSubdomain()}.api.${GRAASP_HOST}`;
 
 const rejectNotOkResponse = (response) => {
   if (!response.ok) {
@@ -31,7 +52,8 @@ const getAppInstances = (appId, userId, sessionId) => {
   )
     .then(rejectNotOkResponse)
     .then(response => response.json())
-    .then(array => ((userId || sessionId) ? array[0] : array)); // if userId is set, return only the element
+    // if userId is set, return only the element
+    .then(array => ((userId || sessionId) ? array[0] : array));
 };
 
 const createAppInstance = (app, data) => {
@@ -71,8 +93,13 @@ const refreshInstances = (appId) => {
     .then((instances) => {
       const table = $('tbody');
       table.empty();
-      instances.forEach(({ userId, sessionId, data, updatedAt }) => table
-        .append(`<tr><td>${userId || sessionId}</td><td>${data.progress}%</td><td>${updatedAt}</td></tr>`));
+      instances.forEach(({
+        user,
+        sessionId,
+        data,
+        updatedAt,
+      }) => table
+        .append(`<tr><td>${user || sessionId}</td><td>${data.progress}%</td><td>${updatedAt}</td></tr>`));
     });
 };
 
@@ -111,7 +138,12 @@ const initUI = (mode, appId) => {
 
 // ####### Init
 
-const { appId, userId, sessionId, mode = 'default' } =
+const {
+  appId,
+  userId,
+  sessionId,
+  mode = 'default',
+} =
   Qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
 if (!appId || (!(userId || sessionId) && mode !== 'admin')) {
@@ -144,26 +176,44 @@ initUI(mode, appId);
 let instanceId;
 
 // GET data
-getAppInstances(appId, userId, sessionId)
-  .then((instance) => {
-    if (!instance) {
-      const initData = { progress: 0 };
-      return createAppInstance(appId, initData);
-    }
+let promise = getAppInstances(appId, userId, sessionId);
 
-    return instance;
-  })
-  .then((instance) => {
-    instanceId = instance._id;
-    updateSlider(instance.data.progress);
-  })
+if (mode === 'default') {
+  promise = promise
+    .then((instance) => {
+      if (!instance) {
+        const initData = { progress: 0 };
+        return createAppInstance(appId, initData);
+      }
+
+      return instance;
+    })
+    .then((instance) => {
+      instanceId = instance._id;
+      updateSlider(instance.data.progress);
+    });
+}
+
+if (mode !== 'default') { // 'admin' or 'review'
+  promise = promise
+    .then((instance) => {
+      if (instance) {
+        instanceId = instance._id;
+        updateSlider(instance.data.progress);
+      }
+    });
+}
+
+promise
   .catch(console.error);
 
-sliderElement.noUiSlider.on('change', (value) => {
-  const progress = parseInt(value[0].slice(0, -1), 10);
-  const data = { progress };
+if (mode === 'default') {
+  sliderElement.noUiSlider.on('change', (value) => {
+    const progress = parseInt(value[0].slice(0, -1), 10);
+    const data = { progress };
 
-  // UPDATE data
-  updateAppInstance(instanceId, data)
-    .catch(console.error);
-});
+    // UPDATE data
+    updateAppInstance(instanceId, data)
+      .catch(console.error);
+  });
+}
