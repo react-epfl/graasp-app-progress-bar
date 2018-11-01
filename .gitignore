@@ -23,9 +23,16 @@ cypress
 # exclude environment variables
 .env*
 
+# include encrypted environment variables
+!.env*.encrypted
+
 # exclude keys
 *.aes
 
 # exclude coverage
 coverage
 .nyc_output
+
+# exclude logs
+*.log
+*.logs

@@ -3,7 +3,6 @@ import Qs from 'qs';
 import noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.css';
 import './styles.css';
-import { GRAASP_HOST } from './config';
 
 const graaspUserViewer = /viewer\.([a-z]+\.)*graasp\.eu/;
 const shortLivedSessionUserViewer = /cloud\.([a-z]+\.)*graasp\.eu/;
@@ -19,18 +18,18 @@ const getApiSubdomain = () => {
     apiSubdomain = 'light-users';
   } else {
     // TODO: should it fallback to something?
-    throw new Error(`Unexpected host: ${hostname}`);
+    throw new Error(`unexpected host "${hostname}": host should start with the "viewer" or "cloud" subdomain`);
   }
 
   return apiSubdomain;
 };
 
-const API_HOST = `${getApiSubdomain()}.api.${GRAASP_HOST}`;
+const API_HOST = `${getApiSubdomain()}.api.${process.env.GRAASP_HOST}`;
 
 const rejectNotOkResponse = (response) => {
   if (!response.ok) {
     return Promise
-      .reject(new Error(`Unable to fetch app data: ${response.status} (${response.statusText})`));
+      .reject(new Error(`unable to fetch app data: ${response.status} (${response.statusText})`));
   }
 
   return response;
