@@ -1,11 +1,13 @@
+import $ from 'jquery';
 import Qs from 'qs';
 import noUiSlider from 'nouislider';
-import $ from 'jquery';
+import 'nouislider/distribute/nouislider.css';
 import './styles.css';
 import { GRAASP_HOST } from './config';
 
 const graaspUserViewer = /viewer\.([a-z]+\.)*graasp\.eu/;
 const shortLivedSessionUserViewer = /cloud\.([a-z]+\.)*graasp\.eu/;
+
 const getApiSubdomain = () => {
   let apiSubdomain = '';
   // TODO: there should be a fallback for when the app does not load embedded
