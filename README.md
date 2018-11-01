@@ -2,9 +2,7 @@
 
 ---
 
-[![Codeship Status](https://app.codeship.com/projects/3334dc50-1a50-0136-2bf1-661b27e1a613/status?branch=master)](https://app.codeship.com/projects/284263)
-[![Coverage Status](https://coveralls.io/repos/github/react-epfl/graasp-app-progress-bar/badge.svg?branch=master)](https://coveralls.io/github/react-epfl/graasp-app-progress-bar?branch=master)
-[![Build Status](https://travis-ci.org/react-epfl/graasp-app-progress-bar.svg?branch=master)](https://travis-ci.org/react-epfl/graasp-app-progress-bar)
+[![Codeship](https://app.codeship.com/projects/a54c4640-c024-0136-8d09-02c19fddfd91/status?branch=master)](https://app.codeship.com/projects/313468)
 
 This tool allows students to state their overall progresses across phases in a given inquiry learning activity (between 0 and 100%). The self-assessment indicator can be adjusted at anytime using the cursor. The teacher view shows the self-assessments of all the students in a single view. It is recommended to add this tool at the top level of an Inquiry Learning Space to make it accessible in all phases (through the button toolbar).
 

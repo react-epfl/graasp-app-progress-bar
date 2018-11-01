@@ -47,7 +47,7 @@
   "private": true,
   "scripts": {
     "start": "env-cmd ./.env.local webpack-dev-server --color --hot --mode=development --disable-host-check",
-    "start:cover": "env-cmd ./.env.local webpack-dev-server --color --hot",
+    "start:test": "env-cmd ./.env.test webpack-dev-server --color --hot",
     "build:prod": "env-cmd ./.env.prod webpack --mode=production",
     "build:dev": "env-cmd ./.env.dev webpack --mode=development",
     "lint": "eslint .",
