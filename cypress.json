@@ -3,5 +3,5 @@
   "integrationFolder": "test/browser",
   "pluginsFile": "test/plugins",
   "supportFile": "test/support",
-  "videoRecording": false
+  "video": false
 }

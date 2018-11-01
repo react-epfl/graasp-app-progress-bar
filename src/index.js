@@ -143,8 +143,7 @@ const {
   userId,
   sessionId,
   mode = 'default',
-} =
-  Qs.parse(window.location.search, { ignoreQueryPrefix: true });
+} = Qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
 if (!appId || (!(userId || sessionId) && mode !== 'admin')) {
   throw new Error('Missing context');
