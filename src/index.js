@@ -4,15 +4,22 @@ import noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.css';
 import './styles.css';
 
-const graaspUserViewer = /viewer\.([a-z]+\.)*graasp\.eu/;
-const shortLivedSessionUserViewer = /cloud\.([a-z]+\.)*graasp\.eu/;
+// reason behind the eslint ignores: https://github.com/webpack/webpack/issues/5392
+// eslint-disable-next-line prefer-destructuring
+const DOMAIN = process.env.DOMAIN;
+// eslint-disable-next-line prefer-destructuring
+const GRAASP_HOST = process.env.GRAASP_HOST;
+
+const graaspUser = new RegExp(`^${DOMAIN.replace(/\./g, '\\.')}$`);
+const graaspUserViewer = new RegExp(`^viewer\\.${DOMAIN.replace(/\./g, '\\.')}$`);
+const shortLivedSessionUserViewer = new RegExp(`^cloud\\.${DOMAIN.replace(/\./g, '\\.')}$`);
 
 const getApiSubdomain = () => {
   let apiSubdomain = '';
   // TODO: there should be a fallback for when the app does not load embedded
   const { hostname } = window.parent.location;
 
-  if (graaspUserViewer.test(hostname)) {
+  if (graaspUserViewer.test(hostname) || graaspUser.test(hostname)) {
     apiSubdomain = 'graasp-users';
   } else if (shortLivedSessionUserViewer.test(hostname)) {
     apiSubdomain = 'light-users';
@@ -24,19 +31,19 @@ const getApiSubdomain = () => {
   return apiSubdomain;
 };
 
-const API_HOST = `${getApiSubdomain()}.api.${process.env.GRAASP_HOST}`;
+const API_HOST = `${getApiSubdomain()}.api.${GRAASP_HOST}`;
 
 const rejectNotOkResponse = (response) => {
   if (!response.ok) {
     return Promise
-      .reject(new Error(`unable to fetch app data: ${response.status} (${response.statusText})`));
+      .reject(new Error(`unable to complete the request: ${response.status} (${response.statusText})`));
   }
 
   return response;
 };
 
-const getAppInstances = (appId, userId, sessionId) => {
-  let url = `//${API_HOST}/app-instances?appId=${appId}`;
+const getAppInstanceResources = (appInstanceId, userId, sessionId) => {
+  let url = `//${API_HOST}/app-instance-resources?appInstanceId=${appInstanceId}`;
 
   if (userId) {
     url += `&userId=${userId}`;
@@ -57,11 +64,11 @@ const getAppInstances = (appId, userId, sessionId) => {
     .then(array => ((userId || sessionId) ? array[0] : array));
 };
 
-const createAppInstance = (app, data) => {
-  const object = { app, data };
+const createAppInstanceResource = (appInstance, data) => {
+  const object = { appInstance, data };
 
   return fetch(
-    `//${API_HOST}/app-instances`,
+    `//${API_HOST}/app-instance-resources`,
     {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
@@ -73,11 +80,11 @@ const createAppInstance = (app, data) => {
     .then(response => response.json());
 };
 
-const updateAppInstance = (instanceId, data) => {
+const updateAppInstanceResource = (appInstanceResourceId, data) => {
   const object = { data };
 
   return fetch(
-    `//${API_HOST}/app-instances/${instanceId}`,
+    `//${API_HOST}/app-instance-resources/${appInstanceResourceId}`,
     {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
@@ -89,12 +96,12 @@ const updateAppInstance = (instanceId, data) => {
     .then(response => response.json());
 };
 
-const refreshInstances = (appId) => {
-  getAppInstances(appId)
-    .then((instances) => {
+const refreshAppInstanceResources = (appInstanceId) => {
+  getAppInstanceResources(appInstanceId)
+    .then((resources) => {
       const table = $('tbody');
       table.empty();
-      instances.forEach(({
+      resources.forEach(({
         user,
         sessionId,
         data,
@@ -104,7 +111,7 @@ const refreshInstances = (appId) => {
     });
 };
 
-const initUI = (mode, appId) => {
+const initUI = (mode, appInstanceId) => {
   switch (mode) {
     case 'admin':
       $('.view-select').addClass('active');
@@ -114,7 +121,7 @@ const initUI = (mode, appId) => {
       $('.view-teacher').click(() => {
         $('.view-teacher, .teacher-content').toggleClass('active', true);
         $('.view-student, .slider-content').toggleClass('active', false);
-        refreshInstances(appId);
+        refreshAppInstanceResources(appInstanceId);
       });
 
       $('.view-student').click(() => {
@@ -122,9 +129,9 @@ const initUI = (mode, appId) => {
         $('.view-student, .slider-content').toggleClass('active', true);
       });
 
-      $('.refresh-button').click(() => refreshInstances(appId));
+      $('.refresh-button').click(() => refreshAppInstanceResources(appInstanceId));
 
-      refreshInstances(appId);
+      refreshAppInstanceResources(appInstanceId);
       break;
     case 'review':
       $('#progressSlider').attr('disabled', true);
@@ -140,13 +147,13 @@ const initUI = (mode, appId) => {
 // ####### Init
 
 const {
-  appId,
+  appInstanceId,
   userId,
   sessionId,
   mode = 'default',
 } = Qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
-if (!appId || (!(userId || sessionId) && mode !== 'admin')) {
+if (!appInstanceId || (!(userId || sessionId) && mode !== 'admin')) {
   throw new Error('Missing context');
 }
 
@@ -171,35 +178,35 @@ noUiSlider.create(
   },
 );
 
-initUI(mode, appId);
+initUI(mode, appInstanceId);
 
-let instanceId;
+let resourceId;
 
 // GET data
-let promise = getAppInstances(appId, userId, sessionId);
+let promise = getAppInstanceResources(appInstanceId, userId, sessionId);
 
 if (mode === 'default') {
   promise = promise
-    .then((instance) => {
-      if (!instance) {
+    .then((resource) => {
+      if (!resource) {
         const initData = { progress: 0 };
-        return createAppInstance(appId, initData);
+        return createAppInstanceResource(appInstanceId, initData);
       }
 
-      return instance;
+      return resource;
     })
-    .then((instance) => {
-      instanceId = instance._id;
-      updateSlider(instance.data.progress);
+    .then((resource) => {
+      resourceId = resource._id;
+      updateSlider(resource.data.progress);
     });
 }
 
 if (mode !== 'default') { // 'admin' or 'review'
   promise = promise
-    .then((instance) => {
-      if (instance) {
-        instanceId = instance._id;
-        updateSlider(instance.data.progress);
+    .then((resource) => {
+      if (resource) {
+        resourceId = resource._id;
+        updateSlider(resource.data.progress);
       }
     });
 }
@@ -213,7 +220,7 @@ if (mode === 'default') {
     const data = { progress };
 
     // UPDATE data
-    updateAppInstance(instanceId, data)
+    updateAppInstanceResource(resourceId, data)
       .catch(console.error);
   });
 }

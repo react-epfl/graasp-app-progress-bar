@@ -51,6 +51,7 @@
     "start:test": "env-cmd ./.env.test webpack-dev-server --color --hot --mode=development --disable-host-check",
     "build:prod": "env-cmd ./.env.prod webpack --mode=production",
     "build:dev": "env-cmd ./.env.dev webpack --mode=development",
+    "build:local": "env-cmd ./.env.local webpack --mode=development",
     "lint": "eslint .",
     "test": "./scripts/test.sh",
     "test:ci": "cypress run",
