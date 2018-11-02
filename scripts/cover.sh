@@ -11,7 +11,7 @@ PID=$!
 sleep 10
 
 # run tests
-yarn test
+yarn test:ci
 TEST_EXIT_CODE=$?
 
 # report coverage

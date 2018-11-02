@@ -1,5 +1,10 @@
-app:
+run-test:
   build: .
+  dockerfile: Dockerfile.run.test
+  encrypted_env_file: .env.test.encrypted
+  extra_hosts:
+    - "viewer.local.graasp.eu:127.0.0.1"
+    - "cloud.local.graasp.eu:127.0.0.1"
 
 build:
   build: .

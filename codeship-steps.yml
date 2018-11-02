@@ -1,22 +1,23 @@
 - type: serial
+  name: default
   steps:
-  - service: app
-    name: lint
-    command: yarn lint
-  - service: app
-    name: test
-    command: bash /usr/src/app/scripts/cover.sh
+    - service: run-test
+      name: lint
+      command: yarn lint
+    - service: run-test
+      name: test
+      command: bash /usr/src/app/scripts/cover.sh
 
 - type: serial
   steps:
-  - service: build
-    name: build
-    command: yarn build
-  - service: aws
-    name: stage
-    tag: staging
-    command: /deploy/scripts/deploy.sh -b /deploy/build
-  - service: aws
-    name: release
-    tag: release
-    command: /deploy/scripts/deploy.sh -b /deploy/build -p
+    - service: build
+      name: build
+      command: yarn build
+    - service: aws
+      name: stage
+      tag: staging
+      command: /deploy/scripts/deploy.sh -b /deploy/build
+    - service: aws
+      name: release
+      tag: release
+      command: /deploy/scripts/deploy.sh -b /deploy/build -p
