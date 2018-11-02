@@ -53,7 +53,7 @@ validate_build() {
 
 
 # parse command line arguments
-while getopts ":e:v:b:" opt; do
+while getopts "e:v:b:" opt; do
   case ${opt} in
     e)
         e=${OPTARG}
@@ -84,10 +84,11 @@ fi
 
 echo "info: publishing app ${GRAASP_APP_ID} version ${VERSION}"
 
-PATH=${GRAASP_DEVELOPER_ID}/${GRAASP_APP_ID}/${VERSION}
+# make sure you do not use the word PATH as a variable because it overrides the PATH environment variable
+APP_PATH=${GRAASP_DEVELOPER_ID}/${GRAASP_APP_ID}/${VERSION}
 
 # sync to s3
-aws s3 sync ${BUILD} s3://${BUCKET}/${PATH} --delete
+aws s3 sync ${BUILD} s3://${BUCKET}/${APP_PATH} --delete
 
 # invalidate cloudfront distribution
-aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION} --paths /${PATH}
+aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION} --paths /${APP_PATH}
