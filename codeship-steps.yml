@@ -8,16 +8,16 @@
       name: test
       command: bash /usr/src/app/scripts/cover.sh
 
-- type: serial
+# development
+# ----------
+# deploys to development environment when merging to develop branch
+- name: release-dev
+  tag: develop
+  type: serial
   steps:
-    - service: build
-      name: build
-      command: yarn build
-    - service: aws
-      name: stage
-      tag: staging
+    - name: build-dev
+      service: build-dev
+      command: yarn build:dev
+    - name: deploy-dev
+      service: deploy-dev
       command: /deploy/scripts/deploy.sh -b /deploy/build
-    - service: aws
-      name: release
-      tag: release
-      command: /deploy/scripts/deploy.sh -b /deploy/build -p
