@@ -108,7 +108,8 @@ const refreshAppInstanceResources = (appInstanceId) => {
         updatedAt,
       }) => table
         .append(`<tr><td>${user || sessionId}</td><td>${data.progress}%</td><td>${updatedAt}</td></tr>`));
-    });
+    })
+    .catch(console.error);
 };
 
 const initUI = (mode, appInstanceId) => {
