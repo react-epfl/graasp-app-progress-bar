@@ -1,16 +1,34 @@
-app:
+run-test:
   build: .
+  dockerfile: Dockerfile.run.test
+  encrypted_env_file: .env.test.encrypted
+  # modify /etc/hosts file to support virtual hosts
+  extra_hosts:
+    - "viewer.local.graasp.eu:127.0.0.1"
+    - "cloud.local.graasp.eu:127.0.0.1"
 
-build:
+build-dev:
   build: .
-  dockerfile: Dockerfile.build
-  environment:
-    ENV: production
+  dockerfile: Dockerfile.build.dev
+  encrypted_env_file: .env.dev.encrypted
   volumes:
     - ./build:/usr/src/app/build
 
-aws:
+deploy-dev:
   image: codeship/aws-deployment
-  encrypted_env_file: .codeship.encrypted
+  encrypted_env_file: .env.dev.encrypted
+  volumes:
+  - .:/deploy
+
+build-prod:
+  build: .
+  dockerfile: Dockerfile.build.prod
+  encrypted_env_file: .env.prod.encrypted
+  volumes:
+    - ./build:/usr/src/app/build
+
+deploy-prod:
+  image: codeship/aws-deployment
+  encrypted_env_file: .env.prod.encrypted
   volumes:
     - .:/deploy

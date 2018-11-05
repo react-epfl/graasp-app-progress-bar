@@ -51,21 +51,10 @@ validate_build() {
     fi
 }
 
-# source default environment variables if present
-if [ -f .env ]; then
-    source .env
-fi
-
-# default target is staging
-TARGET="staging."
 
 # parse command line arguments
-while getopts ":e:v:b:p" opt; do
+while getopts "e:v:b:" opt; do
   case ${opt} in
-    p)
-        # if production flag is passed, deploy to production
-        TARGET=""
-        ;;
     e)
         e=${OPTARG}
         validate_env ${e}
@@ -86,7 +75,7 @@ while getopts ":e:v:b:p" opt; do
 done
 
 # ensure the correct variables are defined
-if [ -z "${GRAASP_DEVELOPER_ID}" ] || [ -z "${GRAASP_APP_ID}" ]; then
+if [ -z "${GRAASP_DEVELOPER_ID}" ] || [ -z "${GRAASP_APP_ID}" ] || [ -z "${BUCKET}" ] || [ -z "${DISTRIBUTION}" ]; then
     echo "error: environment variables GRAASP_DEVELOPER_ID and/or GRAASP_APP_ID are not defined" 1>&2
     echo "error: you can specify them through a .env file in the app root folder" 1>&2
     echo "error: or through another file specified with the -e flag" 1>&2
@@ -95,5 +84,11 @@ fi
 
 echo "info: publishing app ${GRAASP_APP_ID} version ${VERSION}"
 
+# make sure you do not use the word PATH as a variable because it overrides the PATH environment variable
+APP_PATH=${GRAASP_DEVELOPER_ID}/${GRAASP_APP_ID}/${VERSION}
+
 # sync to s3
-aws s3 sync ${BUILD} s3://${TARGET}apps.graasp.eu/${GRAASP_DEVELOPER_ID}/${GRAASP_APP_ID}/${VERSION} --acl public-read
+aws s3 sync ${BUILD} s3://${BUCKET}/${APP_PATH} --delete
+
+# invalidate cloudfront distribution
+aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION} --paths /${APP_PATH}

@@ -4,14 +4,14 @@
 set -e
 
 # start server with coverage flag set
-yarn start:cover &
+yarn start:test &
 PID=$!
 
 # wait until server is up
 sleep 10
 
 # run tests
-yarn test
+yarn test:ci
 TEST_EXIT_CODE=$?
 
 # report coverage

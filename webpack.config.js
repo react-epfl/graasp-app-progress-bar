@@ -1,8 +1,5 @@
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const StyleExtHtmlWebpackPlugin = require('style-ext-html-webpack-plugin');
 const path = require('path');
 
 module.exports = {
@@ -11,10 +8,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: 'css-loader',
-        }),
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.js$/,
@@ -30,14 +24,16 @@ module.exports = {
     filename: 'bundle.js',
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html'),
-      inlineSource: '.(js)$',
     }),
-    new HtmlWebpackInlineSourcePlugin(),
-    new ExtractTextPlugin(path.resolve(__dirname, 'src/styles.css')),
-    // the plugin must come after HtmlWebpackPlugin and ExtractTextWebpackPlugin
-    new StyleExtHtmlWebpackPlugin(),
+    // here we define the variables that are passed to
+    new webpack.EnvironmentPlugin({
+      'process.env.NODE_ENV': process.env.NODE_ENV,
+      'process.env.DEBUG': process.env.DEBUG || false,
+      GRAASP_HOST: process.env.GRAASP_HOST,
+      GRAASP_DOMAIN: process.env.GRAASP_DOMAIN,
+      DOMAIN: process.env.DOMAIN,
+    }),
   ],
 };

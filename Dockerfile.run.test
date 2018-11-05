@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:8.11.1
+FROM cypress/base:10
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -10,4 +10,6 @@ RUN yarn install
 # bundle app source
 COPY . /usr/src/app
 
-CMD ["yarn", "build"]
+EXPOSE 8080
+
+CMD ["yarn", "start"]
