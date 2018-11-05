@@ -32,6 +32,7 @@ module.exports = {
       'process.env.NODE_ENV': process.env.NODE_ENV,
       'process.env.DEBUG': process.env.DEBUG || false,
       GRAASP_HOST: process.env.GRAASP_HOST,
+      GRAASP_DOMAIN: process.env.GRAASP_DOMAIN,
       DOMAIN: process.env.DOMAIN,
     }),
   ],
