@@ -21,3 +21,17 @@
     - name: deploy-dev
       service: deploy-dev
       command: /deploy/scripts/deploy.sh -b /deploy/build
+
+# development
+# ----------
+# deploys to development environment when merging to develop branch
+- name: release-prod
+  tag: master
+  type: serial
+  steps:
+  - name: build-prod
+    service: build-prod
+    command: yarn build:prod
+  - name: deploy-prod
+    service: deploy-prod
+    command: /deploy/scripts/deploy.sh -b /deploy/build

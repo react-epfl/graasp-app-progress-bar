@@ -57,8 +57,6 @@
     "test:ci": "cypress run",
     "report": "cat ./coverage/lcov.info | env-cmd ./.env.test codacy-coverage",
     "deploy:dev": "env-cmd ./.env.dev ./scripts/deploy.sh",
-    "deploy:prod": "env-cmd ./.env.prod ./scripts/deploy.sh",
-    "stage": "yarn deploy",
-    "release": "yarn deploy -p"
+    "deploy:prod": "env-cmd ./.env.prod ./scripts/deploy.sh"
   }
 }
