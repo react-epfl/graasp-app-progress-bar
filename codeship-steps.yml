@@ -22,9 +22,9 @@
       service: deploy-dev
       command: /deploy/scripts/deploy.sh -b /deploy/build
 
-# development
+# production
 # ----------
-# deploys to development environment when merging to develop branch
+# deploys to production environment when merging to master branch
 - name: release-prod
   tag: master
   type: serial
