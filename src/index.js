@@ -4,34 +4,36 @@ import noUiSlider from 'nouislider';
 import 'nouislider/distribute/nouislider.css';
 import './styles.css';
 
-// reason behind the eslint ignores: https://github.com/webpack/webpack/issues/5392
-// eslint-disable-next-line prefer-destructuring
-const DOMAIN = process.env.DOMAIN;
-// eslint-disable-next-line prefer-destructuring
-const GRAASP_HOST = process.env.GRAASP_HOST;
+// defaults
+const DEFAULT_API_HOST = '';
+// const DEFAULT_LANG = 'en';
+const DEFAULT_MODE = 'default';
+// const DEFAULT_VIEW = 'normal';
 
-const graaspUser = new RegExp(`^${DOMAIN.replace(/\./g, '\\.')}$`);
-const graaspUserViewer = new RegExp(`^viewer\\.${DOMAIN.replace(/\./g, '\\.')}$`);
-const shortLivedSessionUserViewer = new RegExp(`^cloud\\.${DOMAIN.replace(/\./g, '\\.')}$`);
+// ####### Init
 
-const getApiSubdomain = () => {
-  let apiSubdomain = '';
-  // TODO: there should be a fallback for when the app does not load embedded
-  const { hostname } = window.parent.location;
+const {
+  sessionId,
+  apiHost = DEFAULT_API_HOST,
+  // lang = DEFAULT_LANG,
+  mode = DEFAULT_MODE,
+  // view = DEFAULT_VIEW,
+  offline = false,
+  appInstanceId,
+  spaceId,
+  // subSpaceId,
+  userId,
+} = Qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
-  if (graaspUserViewer.test(hostname) || graaspUser.test(hostname)) {
-    apiSubdomain = 'graasp-users';
-  } else if (shortLivedSessionUserViewer.test(hostname)) {
-    apiSubdomain = 'light-users';
-  } else {
-    // TODO: should it fallback to something?
-    throw new Error(`unexpected host "${hostname}": host should start with the "viewer" or "cloud" subdomain`);
+if (!offline) {
+  if (!apiHost || !appInstanceId || !spaceId) {
+    throw new Error('missing context');
   }
+}
 
-  return apiSubdomain;
-};
-
-const API_HOST = `${getApiSubdomain()}.api.${GRAASP_HOST}`;
+if ((!(userId || sessionId) && mode !== 'admin')) {
+  throw new Error('missing user');
+}
 
 const rejectNotOkResponse = (response) => {
   if (!response.ok) {
@@ -42,8 +44,17 @@ const rejectNotOkResponse = (response) => {
   return response;
 };
 
-const getAppInstanceResources = (appInstanceId, userId, sessionId) => {
-  let url = `//${API_HOST}/app-instance-resources?appInstanceId=${appInstanceId}`;
+// const postMessage = data => {
+//   const message = JSON.stringify(data);
+//   if (window.parent.postMessage) {
+//     window.parent.postMessage(message, '*');
+//   } else {
+//     console.error('unable to find postMessage');
+//   }
+// };
+
+const getAppInstanceResources = () => {
+  let url = `//${apiHost}/app-instance-resources?appInstanceId=${appInstanceId}`;
 
   if (userId) {
     url += `&userId=${userId}`;
@@ -68,7 +79,7 @@ const createAppInstanceResource = (appInstance, data) => {
   const object = { appInstance, data };
 
   return fetch(
-    `//${API_HOST}/app-instance-resources`,
+    `//${apiHost}/app-instance-resources`,
     {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
@@ -84,7 +95,7 @@ const updateAppInstanceResource = (appInstanceResourceId, data) => {
   const object = { data };
 
   return fetch(
-    `//${API_HOST}/app-instance-resources/${appInstanceResourceId}`,
+    `//${apiHost}/app-instance-resources/${appInstanceResourceId}`,
     {
       body: JSON.stringify(object),
       headers: { 'content-type': 'application/json' },
@@ -96,13 +107,14 @@ const updateAppInstanceResource = (appInstanceResourceId, data) => {
     .then(response => response.json());
 };
 
-const refreshAppInstanceResources = (appInstanceId) => {
-  getAppInstanceResources(appInstanceId)
+const refreshAppInstanceResources = () => {
+  getAppInstanceResources()
     .then((resources) => {
       const table = $('tbody');
       table.empty();
       resources.forEach(({
         user,
+        // eslint-disable-next-line no-shadow
         sessionId,
         data,
         updatedAt,
@@ -112,7 +124,7 @@ const refreshAppInstanceResources = (appInstanceId) => {
     .catch(console.error);
 };
 
-const initUI = (mode, appInstanceId) => {
+const initUI = () => {
   switch (mode) {
     case 'admin':
       $('.view-select').addClass('active');
@@ -145,19 +157,6 @@ const initUI = (mode, appInstanceId) => {
   }
 };
 
-// ####### Init
-
-const {
-  appInstanceId,
-  userId,
-  sessionId,
-  mode = 'default',
-} = Qs.parse(window.location.search, { ignoreQueryPrefix: true });
-
-if (!appInstanceId || (!(userId || sessionId) && mode !== 'admin')) {
-  throw new Error('Missing context');
-}
-
 const sliderElement = document.getElementById('progressSlider');
 const updateSlider = value => sliderElement.noUiSlider.set([value]);
 
@@ -179,7 +178,7 @@ noUiSlider.create(
   },
 );
 
-initUI(mode, appInstanceId);
+initUI();
 
 let resourceId;
 
