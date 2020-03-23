@@ -41,9 +41,11 @@ const getApiContext = getState => {
     userId,
     offline,
     subSpaceId,
+    parentSpaceId,
     sessionId,
     dev,
     standalone,
+    analytics,
   } = context;
 
   if (standalone) {
@@ -74,6 +76,8 @@ const getApiContext = getState => {
     subSpaceId,
     sessionId,
     dev,
+    parentSpaceId,
+    analytics,
   };
 };
 

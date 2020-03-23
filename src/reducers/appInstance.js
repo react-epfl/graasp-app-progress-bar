@@ -11,6 +11,7 @@ import { showErrorToast } from '../utils/toasts';
 
 const DEFAULT_SETTINGS = {
   headerVisible: false,
+  studentsOnly: true,
 };
 
 const INITIAL_STATE = {

@@ -4,13 +4,11 @@ import { connect } from 'react-redux';
 import StudentView from './StudentView';
 import { DEFAULT_VIEW, FEEDBACK_VIEW } from '../../../config/views';
 import { getAppInstanceResources } from '../../../actions';
-import Loader from '../../common/Loader';
 
 class StudentMode extends Component {
   static propTypes = {
     appInstanceId: PropTypes.string,
     view: PropTypes.string,
-    activity: PropTypes.number,
     dispatchGetAppInstanceResources: PropTypes.func.isRequired,
     userId: PropTypes.string,
   };
@@ -18,7 +16,6 @@ class StudentMode extends Component {
   static defaultProps = {
     view: 'normal',
     appInstanceId: null,
-    activity: 0,
     userId: null,
   };
 
@@ -43,10 +40,7 @@ class StudentMode extends Component {
   }
 
   render() {
-    const { view, activity } = this.props;
-    if (activity) {
-      return <Loader />;
-    }
+    const { view } = this.props;
     switch (view) {
       case FEEDBACK_VIEW:
       case DEFAULT_VIEW:
@@ -55,12 +49,11 @@ class StudentMode extends Component {
     }
   }
 }
-const mapStateToProps = ({ context, appInstanceResources }) => {
+const mapStateToProps = ({ context }) => {
   const { userId, appInstanceId } = context;
   return {
     userId,
     appInstanceId,
-    activity: appInstanceResources.activity.length,
   };
 };
 

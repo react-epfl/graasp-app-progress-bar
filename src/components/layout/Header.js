@@ -5,20 +5,24 @@ import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
+import { IconButton } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import { withTranslation } from 'react-i18next';
 import { ReactComponent as Logo } from '../../resources/logo.svg';
-import './Header.css';
-import { addQueryParamsToUrl } from '../../utils/url';
+import { DEFAULT_MODE, TEACHER_MODES } from '../../config/settings';
+import { getAppInstanceResources, getUsers } from '../../actions';
 
 class Header extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
+    dispatchGetAppInstanceResources: PropTypes.func.isRequired,
+    dispatchGetUsers: PropTypes.func.isRequired,
     classes: PropTypes.shape({
-      logo: PropTypes.string,
+      root: PropTypes.string,
       grow: PropTypes.string,
+      logo: PropTypes.string,
     }).isRequired,
-    appInstanceId: PropTypes.string,
-    spaceId: PropTypes.string,
+    mode: PropTypes.string,
   };
 
   static styles = theme => ({
@@ -35,41 +39,27 @@ class Header extends Component {
   });
 
   static defaultProps = {
-    appInstanceId: null,
-    spaceId: null,
+    mode: DEFAULT_MODE,
   };
 
-  renderAppInstanceLink = () => {
-    const { appInstanceId, t } = this.props;
-    if (!appInstanceId) {
-      return (
-        <a
-          href={addQueryParamsToUrl({
-            appInstanceId: '6156e70ab253020033364411',
-          })}
-          className="HeaderLink"
-        >
-          {t('Use Sample App Instance')}
-        </a>
-      );
-    }
-    return <div />;
+  handleRefresh = () => {
+    const { dispatchGetAppInstanceResources, dispatchGetUsers } = this.props;
+    dispatchGetAppInstanceResources();
+    dispatchGetUsers();
   };
 
-  renderSpaceLink = () => {
-    const { spaceId, t } = this.props;
-    if (!spaceId) {
-      return (
-        <a
-          href={addQueryParamsToUrl({ spaceId: '5b56e70ab253020033364411' })}
-          className="HeaderLink"
-        >
-          {t('Use Sample Space')}
-        </a>
-      );
+  renderViewButtons() {
+    const { mode } = this.props;
+
+    if (TEACHER_MODES.includes(mode)) {
+      return [
+        <IconButton onClick={this.handleRefresh} key="refresh">
+          <RefreshIcon color="secondary" />
+        </IconButton>,
+      ];
     }
-    return <div />;
-  };
+    return null;
+  }
 
   render() {
     const { t, classes } = this.props;
@@ -79,10 +69,9 @@ class Header extends Component {
           <Toolbar>
             <Logo className={classes.logo} />
             <Typography variant="h6" color="inherit" className={classes.grow}>
-              {t('Graasp App Starter')}
+              {t('Progress Bar')}
             </Typography>
-            {this.renderSpaceLink()}
-            {this.renderAppInstanceLink()}
+            {this.renderViewButtons()}
           </Toolbar>
         </AppBar>
       </header>
@@ -93,9 +82,15 @@ class Header extends Component {
 const mapStateToProps = ({ context }) => ({
   appInstanceId: context.appInstanceId,
   spaceId: context.spaceId,
+  mode: context.mode,
 });
 
-const ConnectedComponent = connect(mapStateToProps)(Header);
+const mapDispatchToProps = {
+  dispatchGetAppInstanceResources: getAppInstanceResources,
+  dispatchGetUsers: getUsers,
+};
+
+const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(Header);
 const TranslatedComponent = withTranslation()(ConnectedComponent);
 
 export default withStyles(Header.styles)(TranslatedComponent);

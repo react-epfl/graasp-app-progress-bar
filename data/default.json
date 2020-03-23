@@ -24,41 +24,55 @@
     {
       "id": "5b56e70ab253020033364416",
       "name": "juan carlos",
+      "type": "light",
       "spaceId": "5b56e70ab253020033364411"
     },
     {
       "id": "5c055c1083d22e0211c24ad8",
       "name": "pamela",
+      "type": "light",
       "spaceId": "5b56e70ab253020033364411"
     },
     {
       "id": "5c055c1083d22e0211c24ad9",
       "name": "joana",
+      "type": "light",
       "spaceId": "5b56e70ab253020033364411"
     },
     {
       "id": "5c055c1083d22e0211c24ad6",
       "name": "maria",
+      "type": "light",
       "spaceId": "5b56e70ab253020033364411"
     },
     {
       "id": "5c055c1083d22e0211c24ad1",
       "name": "andré",
+      "type": "light",
       "spaceId": "5b56e70ab253020033364411"
     },
     {
       "id": "5c055c1083d22e0211c24ad2",
       "name": "mashkour",
+      "type": "light",
       "spaceId": "5b56e70ab253020033364411"
     },
     {
       "id": "5c055c1083d22e0211c24ad3",
       "name": "ezequiel",
+      "type": "light",
       "spaceId": "5b56e70ab253020033364411"
     },
     {
       "id": "5c055c1083d22e0211c24ad4",
       "name": "denis",
+      "type": "light",
+      "spaceId": "5b56e70ab253020033364411"
+    },
+    {
+      "id": "5c055c1083d22e0211c21234",
+      "name": "Juan Carlos Farah",
+      "type": "graasp",
       "spaceId": "5b56e70ab253020033364411"
     }
   ]
