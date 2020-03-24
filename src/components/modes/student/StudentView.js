@@ -13,6 +13,7 @@ const styles = theme => ({
     textAlign: 'left',
     margin: theme.spacing(3),
     padding: theme.spacing(2),
+    overflow: 'hidden',
   },
   grid: {
     display: 'flex',
@@ -20,6 +21,7 @@ const styles = theme => ({
   },
   slider: {
     marginTop: theme.spacing(5),
+    marginRight: theme.spacing(),
   }
 });
 
