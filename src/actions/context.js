@@ -5,7 +5,7 @@ import {
   GET_CONTEXT_SUCCEEDED,
 } from '../types';
 import { flag, receiveMessage } from './common';
-import { DEFAULT_API_HOST, DEFAULT_MODE } from '../config/settings';
+import { DEFAULT_API_HOST, DEFAULT_MODE, STUDENT_MODES } from '../config/settings';
 import { DEFAULT_VIEW } from '../config/views';
 import isInFrame from '../utils/isInFrame';
 
@@ -41,6 +41,7 @@ const getContext = () => dispatch => {
     const devBool = dev === 'true';
     const reviewingBool = reviewing === 'true';
     const analyticsBool = analytics === 'true';
+    const tool = Boolean(parentSpaceId && spaceId && parentSpaceId === spaceId && STUDENT_MODES.includes(mode));
 
     const standalone = !devBool && !isInFrame();
 
@@ -57,6 +58,7 @@ const getContext = () => dispatch => {
       subSpaceId,
       parentSpaceId,
       standalone,
+      tool,
       offline: offlineBool,
       dev: devBool,
       reviewing: reviewingBool,

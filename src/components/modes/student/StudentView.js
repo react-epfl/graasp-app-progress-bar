@@ -10,14 +10,19 @@ import { patchAppInstanceResource, postAppInstanceResource } from '../../../acti
 
 const styles = theme => ({
   main: {
-    textAlign: 'left',
     margin: theme.spacing(3),
     padding: theme.spacing(2),
     overflow: 'hidden',
   },
+  horizontalGrid: {
+    justifyContent: 'flex-start',
+    display: 'flex',
+    alignItems: 'center',
+  },
   grid: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   slider: {
     marginTop: theme.spacing(5),
@@ -50,6 +55,7 @@ const marks = [
 
 export const StudentView = ({
   t,
+  tool,
   activity,
   classes,
   progressResource,
@@ -65,6 +71,8 @@ export const StudentView = ({
   const objectiveResourceData = objectiveResourceId ? objectiveResource.data : 0;
 
   const [progress, setProgress] = useState(progressResourceData);
+
+  const VERTICAL_HEIGHT = '300px';
 
   useEffect(() => {
     setProgress(progressResourceData);
@@ -89,13 +97,42 @@ export const StudentView = ({
   return (
     <div className={classes.main}>
       <Grid container spacing={0}>
-        <Grid item xs={2} className={classes.grid}>
-          <Typography id="progress" gutterBottom>
-            {t('My Progress')}
-          </Typography>
-        </Grid>
-        <Grid item xs={10} className={classes.grid}>
+        {
+          tool &&
+            (
+              <>
+                <Grid item xs={objectiveResourceId ? 6 : 12} className={classes.grid}>
+                  <Typography id="progress" gutterBottom>
+                    {t('My Progress')}
+                  </Typography>
+                </Grid>
+                {
+                  objectiveResourceId &&
+                  (
+                    <Grid item xs={6} className={classes.grid}>
+                      <Typography id="progress" gutterBottom>
+                        {t('Objective')}
+                      </Typography>
+                    </Grid>
+                  )
+                }
+              </>
+            )
+        }
+        {
+         !tool && (
+           <Grid item xs={2} className={classes.horizontalGrid}>
+             <Typography id="progress" gutterBottom>
+               {t('My Progress')}
+             </Typography>
+           </Grid>
+         )
+        }
+        {/* eslint-disable-next-line no-nested-ternary */}
+        <Grid item xs={tool ? (objectiveResourceId ? 6 : 12) : 10} className={classes.grid}>
           <Slider
+            style={tool ? { height: VERTICAL_HEIGHT } : {}}
+            orientation={tool ? 'vertical' : 'horizontal'}
             className={classes.slider}
             disabled={activity}
             value={progress}
@@ -113,13 +150,19 @@ export const StudentView = ({
           objectiveResourceId &&
           (
             <>
-              <Grid item xs={2} className={classes.grid}>
-                <Typography id="progress" gutterBottom>
-                  {t('Objective')}
-                </Typography>
-              </Grid>
-              <Grid item xs={10} className={classes.grid}>
+              {
+                !tool && (
+                  <Grid item xs={2} className={classes.horizontalGrid}>
+                    <Typography id="progress" gutterBottom>
+                      {t('Objective')}
+                    </Typography>
+                  </Grid>
+                )
+              }
+              <Grid item xs={tool ? 6 : 10} className={classes.grid}>
                 <Slider
+                  style={tool ? { height: VERTICAL_HEIGHT } : {}}
+                  orientation={tool ? 'vertical' : 'horizontal'}
                   className={classes.slider}
                   value={objectiveResourceData}
                   getAriaValueText={formatValueLabel}
@@ -139,7 +182,7 @@ export const StudentView = ({
 };
 
 const mapStateToProps = ({ appInstanceResources, context }) => {
-  const { userId } = context;
+  const { userId, tool } = context;
   const objectiveResource = appInstanceResources.content.find(
     ({ user, type }) => {
       return user === userId && type === OBJECTIVE;
@@ -152,6 +195,7 @@ const mapStateToProps = ({ appInstanceResources, context }) => {
   );
   return {
     userId,
+    tool,
     progressResource,
     objectiveResource,
     activity: Boolean(appInstanceResources.activity.length),
@@ -166,6 +210,7 @@ const mapDispatchToProps = {
 StudentView.propTypes = {
   t: PropTypes.func.isRequired,
   activity: PropTypes.bool.isRequired,
+  tool: PropTypes.bool.isRequired,
   progressResource: PropTypes.shape({
     id: PropTypes.string,
     _id: PropTypes.string,
@@ -183,6 +228,7 @@ StudentView.propTypes = {
     main: PropTypes.string,
     slider: PropTypes.string,
     grid: PropTypes.string,
+    horizontalGrid: PropTypes.string,
   }).isRequired,
 };
 

@@ -1,7 +1,22 @@
 {
   "translations": {
-    "This is the student view. Switch to the teacher view by clicking on the URL below.": "Ceci est la vue des étudiants. Passez à la vue enseignant en cliquant sur l’URL ci-dessous.",
-    "This is the teacher view. Switch to the student view by clicking on the URL below.": "Ceci est la vue de l'enseignant. Passez à la vue des étudiants en cliquant sur l’URL ci-dessous.",
-    "Welcome to the Graasp App Starter Kit": "Bienvenue dans le kit de démarrage de l'application Graasp"
+    "My Progress": "My Progress",
+    "Progress Bar": "Progress Bar",
+    "Objective": "Objective",
+    "Set Objective": "Set Objective",
+    "Delete Objective": "Delete Objective",
+    "Delete": "Delete",
+    "Cancel": "Cancel",
+    "Review": "Review",
+    "Submit an objective that will be visible to the student.": "Submit an objective that will be visible to the student.",
+    "No Students": "No Students",
+    "Students Only": "Students Only",
+    "Student": "Student",
+    "Progress": "Progress",
+    "Settings": "Paramètres",
+    "Show Header to Students": "Montrer l'en-tête aux étudiants.",
+    "Actions": "Actions Possibles",
+    "Currently we do not support giving an objective to anonymous users.": "Currently we do not support giving an objective to anonymous users.",
+    "By clicking 'Delete', you will be deleting the objective you set for the student. This action cannot be undone.": "By clicking 'Delete', you will be deleting the objective you set for the student. This action cannot be undone."
   }
 }

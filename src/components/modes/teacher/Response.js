@@ -205,7 +205,7 @@ class Response extends Component {
             open={confirmDialogOpen}
             title={t('Delete Objective')}
             text={t(
-              'By clicking "Delete", you will be deleting the objective you set for the student. This action cannot be undone.',
+              'By clicking \'Delete\', you will be deleting the objective you set for the student. This action cannot be undone.',
             )}
             handleClose={this.handleToggleConfirmDialog(false)}
             handleConfirm={this.handleConfirmDelete}

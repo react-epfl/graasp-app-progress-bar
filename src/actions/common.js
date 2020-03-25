@@ -46,6 +46,7 @@ const getApiContext = getState => {
     dev,
     standalone,
     analytics,
+    tool,
   } = context;
 
   if (standalone) {
@@ -78,6 +79,7 @@ const getApiContext = getState => {
     dev,
     parentSpaceId,
     analytics,
+    tool,
   };
 };
 
