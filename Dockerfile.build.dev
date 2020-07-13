@@ -1,5 +1,8 @@
 FROM mhart/alpine-node:12
 
+# add dependencies
+RUN apk add --no-cache git
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
