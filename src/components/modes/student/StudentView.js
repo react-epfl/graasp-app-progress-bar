@@ -6,11 +6,13 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid, Slider, Typography } from '@material-ui/core';
 import formatValueLabel from '../../../utils/formatValueLabel';
 import { OBJECTIVE, PROGRESS } from '../../../config/appInstanceResourceTypes';
-import { patchAppInstanceResource, postAppInstanceResource } from '../../../actions';
+import {
+  patchAppInstanceResource,
+  postAppInstanceResource,
+} from '../../../actions';
 
 const styles = theme => ({
   main: {
-    margin: theme.spacing(3),
     padding: theme.spacing(2),
     overflow: 'hidden',
   },
@@ -27,7 +29,7 @@ const styles = theme => ({
   slider: {
     marginTop: theme.spacing(5),
     marginRight: theme.spacing(),
-  }
+  },
 });
 
 const marks = [
@@ -64,11 +66,15 @@ export const StudentView = ({
   dispatchPostAppInstanceResource,
   dispatchPatchAppInstanceResource,
 }) => {
-  const progressResourceId = progressResource && (progressResource.id || progressResource._id);
+  const progressResourceId =
+    progressResource && (progressResource.id || progressResource._id);
   const progressResourceData = progressResourceId ? progressResource.data : 0;
 
-  const objectiveResourceId = objectiveResource && (objectiveResource.id || objectiveResource._id);
-  const objectiveResourceData = objectiveResourceId ? objectiveResource.data : 0;
+  const objectiveResourceId =
+    objectiveResource && (objectiveResource.id || objectiveResource._id);
+  const objectiveResourceData = objectiveResourceId
+    ? objectiveResource.data
+    : 0;
 
   const [progress, setProgress] = useState(progressResourceData);
 
@@ -97,39 +103,41 @@ export const StudentView = ({
   return (
     <div className={classes.main}>
       <Grid container spacing={0}>
-        {
-          tool &&
-            (
-              <>
-                <Grid item xs={objectiveResourceId ? 6 : 12} className={classes.grid}>
-                  <Typography id="progress" gutterBottom>
-                    {t('My Progress')}
-                  </Typography>
-                </Grid>
-                {
-                  objectiveResourceId &&
-                  (
-                    <Grid item xs={6} className={classes.grid}>
-                      <Typography id="progress" gutterBottom>
-                        {t('Objective')}
-                      </Typography>
-                    </Grid>
-                  )
-                }
-              </>
-            )
-        }
-        {
-         !tool && (
-           <Grid item xs={2} className={classes.horizontalGrid}>
-             <Typography id="progress" gutterBottom>
-               {t('My Progress')}
-             </Typography>
-           </Grid>
-         )
-        }
-        {/* eslint-disable-next-line no-nested-ternary */}
-        <Grid item xs={tool ? (objectiveResourceId ? 6 : 12) : 10} className={classes.grid}>
+        {tool && (
+          <>
+            <Grid
+              item
+              xs={objectiveResourceId ? 6 : 12}
+              className={classes.grid}
+            >
+              <Typography id="progress" gutterBottom>
+                {t('My Progress')}
+              </Typography>
+            </Grid>
+            {objectiveResourceId && (
+              <Grid item xs={6} className={classes.grid}>
+                <Typography id="progress" gutterBottom>
+                  {t('Objective')}
+                </Typography>
+              </Grid>
+            )}
+          </>
+        )}
+        {!tool && (
+          <Grid item xs={2} className={classes.horizontalGrid}>
+            <Typography id="progress" gutterBottom>
+              {t('My Progress')}
+            </Typography>
+          </Grid>
+        )}
+        <Grid
+          item
+          xs={
+            // eslint-disable-next-line no-nested-ternary
+            tool ? (objectiveResourceId ? 6 : 12) : 10
+          }
+          className={classes.grid}
+        >
           <Slider
             style={tool ? { height: VERTICAL_HEIGHT } : {}}
             orientation={tool ? 'vertical' : 'horizontal'}
@@ -146,36 +154,31 @@ export const StudentView = ({
             onChangeCommitted={handleChangeCommitted}
           />
         </Grid>
-        {
-          objectiveResourceId &&
-          (
-            <>
-              {
-                !tool && (
-                  <Grid item xs={2} className={classes.horizontalGrid}>
-                    <Typography id="progress" gutterBottom>
-                      {t('Objective')}
-                    </Typography>
-                  </Grid>
-                )
-              }
-              <Grid item xs={tool ? 6 : 10} className={classes.grid}>
-                <Slider
-                  style={tool ? { height: VERTICAL_HEIGHT } : {}}
-                  orientation={tool ? 'vertical' : 'horizontal'}
-                  className={classes.slider}
-                  value={objectiveResourceData}
-                  getAriaValueText={formatValueLabel}
-                  aria-labelledby={t('Objective')}
-                  valueLabelDisplay="on"
-                  valueLabelFormat={formatValueLabel}
-                  marks={marks}
-                  disabled
-                />
+        {objectiveResourceId && (
+          <>
+            {!tool && (
+              <Grid item xs={2} className={classes.horizontalGrid}>
+                <Typography id="progress" gutterBottom>
+                  {t('Objective')}
+                </Typography>
               </Grid>
-            </>
-          )
-        }
+            )}
+            <Grid item xs={tool ? 6 : 10} className={classes.grid}>
+              <Slider
+                style={tool ? { height: VERTICAL_HEIGHT } : {}}
+                orientation={tool ? 'vertical' : 'horizontal'}
+                className={classes.slider}
+                value={objectiveResourceData}
+                getAriaValueText={formatValueLabel}
+                aria-labelledby={t('Objective')}
+                valueLabelDisplay="on"
+                valueLabelFormat={formatValueLabel}
+                marks={marks}
+                disabled
+              />
+            </Grid>
+          </>
+        )}
       </Grid>
     </div>
   );
@@ -242,4 +245,7 @@ const StyledComponent = withStyles(styles)(StudentView);
 
 const TranslatedComponent = withTranslation()(StyledComponent);
 
-export default connect(mapStateToProps, mapDispatchToProps)(TranslatedComponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TranslatedComponent);

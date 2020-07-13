@@ -1,12 +1,10 @@
 {
-  "name": "graasp-app-starter-react",
-  "version": "0.5.3",
+  "name": "graasp-app-progress-bar",
+  "version": "0.1.0",
   "private": true,
-  "author": "React EPFL",
+  "author": "EPFL",
   "contributors": [
-    "Juan Carlos Farah",
-    "Hassan Abdul Ghaffar",
-    "Mashkour Abdel Aziz"
+    "Juan Carlos Farah"
   ],
   "homepage": ".",
   "license": "MIT",
@@ -62,9 +60,11 @@
     "@commitlint/config-conventional": "8.3.4",
     "codacy-coverage": "3.4.0",
     "cross-env": "6.0.0",
+    "cypress": "4.2.0",
     "env-cmd": "10.1.0",
     "eslint-config-airbnb": "18.1.0",
     "eslint-config-prettier": "6.10.0",
+    "eslint-plugin-cypress": "2.11.1",
     "eslint-plugin-import": "2.20.1",
     "eslint-plugin-jsx-a11y": "6.2.3",
     "eslint-plugin-react": "7.19.0",
@@ -72,6 +72,7 @@
     "html-webpack-plugin": "3.2.0",
     "husky": "3.0.5",
     "interpolate-html-plugin": "3.0.0",
+    "istanbul-lib-coverage": "3.0.0",
     "json-server": "0.15.1",
     "npm-run-all": "4.1.5",
     "prettier": "1.19.1",

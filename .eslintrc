@@ -6,7 +6,8 @@
   "plugins": [
     "import",
     "jsx-a11y",
-    "react"
+    "react",
+    "cypress"
   ],
   "env": {
     "browser": true,
@@ -25,7 +26,8 @@
       {
         "allow": [
           "_id",
-          "__REDUX_DEVTOOLS_EXTENSION__"
+          "__REDUX_DEVTOOLS_EXTENSION__",
+          "__coverage__"
         ]
       }
     ],
